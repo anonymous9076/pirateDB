@@ -1,24 +1,19 @@
-const fs=require('fs');
 const express = require("express");
 const server=express();
 const cors=require('cors')
-const data=JSON.parse(fs.readFileSync('data.json','utf-8'));
-
-const products=data.products
-
-server.use(cors()
-);
+const mongoose=require('mongoose')
+const router= require('./Routes/product.js')
 
 
-server.get('/items',async(req,res)=>{
-    let getdata=await products
-    res.json(getdata);
-});
-server.get('/items/id=:id',async(req,res)=>{
-    let id =(req.params.id)
-    let item=await products.find(p=>p.id==id)
-    res.json(item)
-});
+database().catch(()=>console.log('error = '))
+async function database(){
+    await mongoose.connect('mongodb+srv://tushar915:tushar1292@cluster0.ihjuf05.mongodb.net/pirate');
+    console.log('database started');
+}
+
+server.use(cors());
+server.use('/',router)
+
 
 server.listen(
     8080,()=>{console.log('started')}
